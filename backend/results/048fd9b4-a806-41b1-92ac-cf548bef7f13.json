@@ -1,0 +1,1199 @@
+{
+  "task_id": "048fd9b4-a806-41b1-92ac-cf548bef7f13",
+  "file_name": "048fd9b4-a806-41b1-92ac-cf548bef7f13_План Раздела АР.dxf",
+  "processed_at": "2025-11-27T05:13:23.164500Z",
+  "source_info": {
+    "is_dxf": true,
+    "layers_count": 38,
+    "layers": [
+      {
+        "name": "0"
+      },
+      {
+        "name": "Defpoints"
+      },
+      {
+        "name": "АР_Монолит"
+      },
+      {
+        "name": "АР_Размеры_оси"
+      },
+      {
+        "name": "АР_Ось"
+      },
+      {
+        "name": "АР_Дверь"
+      },
+      {
+        "name": "АР_Газоблок наруж"
+      },
+      {
+        "name": "АР_Утеплитель"
+      },
+      {
+        "name": "АР_Окна и витражи"
+      },
+      {
+        "name": "АР_ГКЛ"
+      },
+      {
+        "name": "АР_Сантехника"
+      },
+      {
+        "name": "АР_Помещение-площадь"
+      },
+      {
+        "name": "АР_Помещение текст"
+      },
+      {
+        "name": "АР_СКЦ 190мм"
+      },
+      {
+        "name": "АР_Газаблок 100мм"
+      },
+      {
+        "name": "АР_Площади"
+      },
+      {
+        "name": "АР_Вентблок"
+      },
+      {
+        "name": "АР_Отверстия"
+      },
+      {
+        "name": "АР_Газоблок 200мм"
+      },
+      {
+        "name": "АР_Корзины"
+      },
+      {
+        "name": "АР_Мебель"
+      },
+      {
+        "name": "АР_Кухня"
+      },
+      {
+        "name": "АР_Текст"
+      },
+      {
+        "name": "АР_Штамп"
+      },
+      {
+        "name": "АР_СКЦ 90мм"
+      },
+      {
+        "name": "АР_Фасад"
+      },
+      {
+        "name": "АР_Выноски"
+      },
+      {
+        "name": "__АР__линия_09"
+      },
+      {
+        "name": "АР_Лифты"
+      },
+      {
+        "name": "АР_Контур плит"
+      },
+      {
+        "name": "АР_Марка двери"
+      },
+      {
+        "name": "АР_Марка пола"
+      },
+      {
+        "name": "АР_Подписи"
+      },
+      {
+        "name": "ЭЛ_Щитки"
+      },
+      {
+        "name": "АР_Марка окна"
+      },
+      {
+        "name": "Layout frame"
+      },
+      {
+        "name": "0 Отмостка по земле"
+      },
+      {
+        "name": "изменения АР"
+      }
+    ],
+    "entity_counts": {
+      "LWPOLYLINE": 586,
+      "DIMENSION": 14,
+      "MTEXT": 90,
+      "INSERT": 204,
+      "HATCH": 247,
+      "CIRCLE": 23,
+      "TEXT": 15,
+      "ACAD_TABLE": 1,
+      "MULTILEADER": 1
+    },
+    "examples": {
+      "lines": [],
+      "polylines": [
+        {
+          "layer": "АР_Ось",
+          "points": [
+            [
+              13929.73921621212,
+              37008.85637141377
+            ],
+            [
+              13929.73921621212,
+              17380.88050062381
+            ]
+          ]
+        },
+        {
+          "layer": "АР_Ось",
+          "points": [
+            [
+              28629.73921621212,
+              37008.85637141377
+            ],
+            [
+              28629.73921621212,
+              17380.88050062381
+            ]
+          ]
+        },
+        {
+          "layer": "АР_Ось",
+          "points": [
+            [
+              24829.73921621212,
+              37008.85637141377
+            ],
+            [
+              24829.73921621212,
+              17380.88050062381
+            ]
+          ]
+        },
+        {
+          "layer": "АР_Ось",
+          "points": [
+            [
+              17329.73921621212,
+              37008.85637141377
+            ],
+            [
+              17329.73921621212,
+              17380.88050062381
+            ]
+          ]
+        },
+        {
+          "layer": "АР_Ось",
+          "points": [
+            [
+              44392.9393312353,
+              35638.725936476
+            ],
+            [
+              8950.765342549596,
+              35638.725936476
+            ]
+          ]
+        }
+      ],
+      "inserts": [
+        {
+          "layer": "АР_Помещение текст",
+          "block_name": "RM_AREA",
+          "insert_point": [
+            17490.65453944308,
+            15859.04871063612
+          ]
+        },
+        {
+          "layer": "АР_Дверь",
+          "block_name": "*U12",
+          "insert_point": [
+            17879.73994771767,
+            21838.72594263414
+          ]
+        },
+        {
+          "layer": "АР_Вентблок",
+          "block_name": "ventblok_400x670",
+          "insert_point": [
+            18449.7393194185,
+            27438.72429271057
+          ]
+        },
+        {
+          "layer": "АР_Вентблок",
+          "block_name": "ventblok_400x670",
+          "insert_point": [
+            19119.73931941856,
+            27438.70437604693
+          ]
+        },
+        {
+          "layer": "АР_Сантехника",
+          "block_name": "Wanna_1750",
+          "insert_point": [
+            19179.73983745815,
+            29213.72924956304
+          ]
+        }
+      ]
+    }
+  },
+  "geometry_analysis": {
+    "walls_detection": {
+      "total_segments": 328,
+      "total_walls": 52,
+      "wall_layers_used": [
+        "АР_ГКЛ",
+        "АР_Газоблок 200мм",
+        "АР_Газоблок наруж",
+        "АР_Монолит"
+      ],
+      "wall_layers_stats": [
+        {
+          "layer": "АР_ГКЛ",
+          "segments": 56,
+          "total_length": 59060.435273181414
+        },
+        {
+          "layer": "АР_Газоблок 200мм",
+          "segments": 36,
+          "total_length": 18300.430671467024
+        },
+        {
+          "layer": "АР_Газоблок наруж",
+          "segments": 64,
+          "total_length": 25399.992012444527
+        },
+        {
+          "layer": "АР_Монолит",
+          "segments": 172,
+          "total_length": 340602.22604717786
+        }
+      ],
+      "walls": [
+        {
+          "id": "wall-1",
+          "layer": "АР_Монолит",
+          "center_start": [
+            13779.73921621212,
+            20488.72593647611
+          ],
+          "center_end": [
+            14579.75776005303,
+            20488.72398655126
+          ],
+          "length": 34100.03406562313,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-2",
+          "layer": "АР_Монолит",
+          "center_start": [
+            16629.73772022284,
+            35588.72545840699
+          ],
+          "center_end": [
+            17429.73923125525,
+            35788.725936476
+          ],
+          "length": 11300.003022293848,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-3",
+          "layer": "АР_Монолит",
+          "center_start": [
+            16979.75776005303,
+            20488.72398655126
+          ],
+          "center_end": [
+            17229.73923125525,
+            20488.72593647611
+          ],
+          "length": 19799.96292171893,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-4",
+          "layer": "АР_Монолит",
+          "center_start": [
+            21229.73921621213,
+            27688.72593667262
+          ],
+          "center_end": [
+            23679.73893364327,
+            27913.75283235798
+          ],
+          "length": 21049.9973712693,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-5",
+          "layer": "АР_Монолит",
+          "center_start": [
+            27979.73770204105,
+            20488.78965962041
+          ],
+          "center_end": [
+            29429.7407303832,
+            20488.72593647611
+          ],
+          "length": 32900.00076293168,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-6",
+          "layer": "АР_Монолит",
+          "center_start": [
+            21229.73918700568,
+            31938.7061965442
+          ],
+          "center_end": [
+            21429.73918700568,
+            31938.7061965442
+          ],
+          "length": 8100.039479863604,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-7",
+          "layer": "АР_Газоблок наруж",
+          "center_start": [
+            17429.73924639507,
+            20438.72593647611
+          ],
+          "center_end": [
+            17879.73994771767,
+            20438.72593647611
+          ],
+          "length": 1300.0014026451972,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-8",
+          "layer": "АР_Газоблок наруж",
+          "center_start": [
+            20279.73994771766,
+            20438.72593647611
+          ],
+          "center_end": [
+            20279.73994771766,
+            20638.72593647611
+          ],
+          "length": 2299.998929003901,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-9",
+          "layer": "АР_ГКЛ",
+          "center_start": [
+            17229.73921693145,
+            29788.72628292474
+          ],
+          "center_end": [
+            21229.73921621213,
+            29813.72596908521
+          ],
+          "length": 13100.00283511463,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-10",
+          "layer": "АР_ГКЛ",
+          "center_start": [
+            21504.73912744405,
+            29538.72632415834
+          ],
+          "center_end": [
+            21504.73912744405,
+            29563.72632415834
+          ],
+          "length": 2900.000079562411,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-11",
+          "layer": "АР_ГКЛ",
+          "center_start": [
+            17429.73905779823,
+            29563.72628019747
+          ],
+          "center_end": [
+            21229.74056134134,
+            29563.72668117736
+          ],
+          "length": 7650.003007086262,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-12",
+          "layer": "АР_Газоблок наруж",
+          "center_start": [
+            23929.73881124664,
+            35638.725936476
+          ],
+          "center_end": [
+            24729.73940932815,
+            35638.72594605197
+          ],
+          "length": 2000.0011961630228,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-13",
+          "layer": "АР_Газоблок наруж",
+          "center_start": [
+            21429.74032212963,
+            35638.725936476
+          ],
+          "center_end": [
+            21429.74032212963,
+            35838.725936476
+          ],
+          "length": 1199.9969782340195,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-14",
+          "layer": "АР_Газоблок наруж",
+          "center_start": [
+            20479.73882628977,
+            35638.72545295974
+          ],
+          "center_end": [
+            21229.73901517707,
+            35638.72545295974
+          ],
+          "length": 1900.0003777746024,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-15",
+          "layer": "АР_Газоблок наруж",
+          "center_start": [
+            17429.74033717275,
+            35638.72545295974
+          ],
+          "center_end": [
+            17429.74033717275,
+            35838.72545295974
+          ],
+          "length": 1699.9969782340413,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-16",
+          "layer": "АР_ГКЛ",
+          "center_start": [
+            21479.74001526646,
+            29188.72584791001
+          ],
+          "center_end": [
+            21479.74040294881,
+            29613.72588127627
+          ],
+          "length": 900.0000667328758,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-17",
+          "layer": "АР_ГКЛ",
+          "center_start": [
+            21479.74001525331,
+            27938.72584790891
+          ],
+          "center_end": [
+            21479.74040293565,
+            28138.72588127511
+          ],
+          "length": 450.0000667331499,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-18",
+          "layer": "АР_Газоблок наруж",
+          "center_start": [
+            24179.72067787667,
+            20438.73352515054
+          ],
+          "center_end": [
+            24179.72067787667,
+            20638.7335251506
+          ],
+          "length": 1499.5375099629973,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-19",
+          "layer": "АР_Газоблок наруж",
+          "center_start": [
+            21429.48925734515,
+            20438.7259328517
+          ],
+          "center_end": [
+            21779.72067787667,
+            20438.73352515054
+          ],
+          "length": 1100.4628412277484,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-20",
+          "layer": "АР_Монолит",
+          "center_start": [
+            24729.73921715925,
+            25689.23559268852
+          ],
+          "center_end": [
+            25579.73770204105,
+            20488.78925407762
+          ],
+          "length": 12501.016260435354,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-21",
+          "layer": "АР_ГКЛ",
+          "center_start": [
+            23979.74003089283,
+            29538.72714723749
+          ],
+          "center_end": [
+            24929.73945087061,
+            35588.71064051634
+          ],
+          "length": 25450.025961186002,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-22",
+          "layer": "АР_Монолит",
+          "center_start": [
+            24929.73933515156,
+            32888.72510479853
+          ],
+          "center_end": [
+            30029.73772051692,
+            32888.72533402816
+          ],
+          "length": 10599.996770730733,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-23",
+          "layer": "АР_Монолит",
+          "center_start": [
+            27029.73984810657,
+            30488.72547664706
+          ],
+          "center_end": [
+            30029.72887051984,
+            30488.72547664706
+          ],
+          "length": 11199.977446970417,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-24",
+          "layer": "АР_Монолит",
+          "center_start": [
+            24729.73899077543,
+            27688.74682306356
+          ],
+          "center_end": [
+            24729.73899077543,
+            27938.74682306368
+          ],
+          "length": 16100.000838474949,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-25",
+          "layer": "АР_Монолит",
+          "center_start": [
+            31829.73956975513,
+            20488.78925407762
+          ],
+          "center_end": [
+            32329.739215265,
+            25689.23559268852
+          ],
+          "length": 12201.01858354179,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-26",
+          "layer": "АР_ГКЛ",
+          "center_start": [
+            33579.52297554287,
+            27913.75244467546
+          ],
+          "center_end": [
+            38529.7392147574,
+            27688.72592960586
+          ],
+          "length": 10450.432300893228,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-27",
+          "layer": "АР_Монолит",
+          "center_start": [
+            35829.73920108011,
+            27688.72593667262
+          ],
+          "center_end": [
+            36029.73920108011,
+            27688.72593667262
+          ],
+          "length": 14800.000000393025,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-28",
+          "layer": "АР_Газоблок наруж",
+          "center_start": [
+            32529.98899961863,
+            20438.7259293732
+          ],
+          "center_end": [
+            33079.97044453217,
+            20438.7239868324
+          ],
+          "length": 1499.9628898340668,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-29",
+          "layer": "АР_Газоблок наруж",
+          "center_start": [
+            35479.97044453217,
+            20438.7239868324
+          ],
+          "center_end": [
+            35479.97044453217,
+            20638.72398683245
+          ],
+          "length": 1100.0374611047919,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-30",
+          "layer": "АР_Газоблок 200мм",
+          "center_start": [
+            34329.73912744404,
+            29613.72675955485
+          ],
+          "center_end": [
+            42209.73932110402,
+            29788.74750728972
+          ],
+          "length": 17460.002567417276,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-31",
+          "layer": "АР_ГКЛ",
+          "center_start": [
+            34329.73921621213,
+            29538.72675955496
+          ],
+          "center_end": [
+            35754.7395606417,
+            29188.72576032995
+          ],
+          "length": 3700.000242538038,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-32",
+          "layer": "АР_Газоблок наруж",
+          "center_start": [
+            32529.7390230961,
+            35638.725936476
+          ],
+          "center_end": [
+            32529.7390230961,
+            35838.725936476
+          ],
+          "length": 1499.9629435099525,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-33",
+          "layer": "АР_Газоблок наруж",
+          "center_start": [
+            35479.72049479996,
+            35638.71843839574
+          ],
+          "center_end": [
+            35829.7393910854,
+            35638.72593329437
+          ],
+          "length": 1100.0377927313616,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-34",
+          "layer": "АР_ГКЛ",
+          "center_start": [
+            36029.73901853268,
+            29563.74773317212
+          ],
+          "center_end": [
+            36029.73901853268,
+            29588.74773317212
+          ],
+          "length": 14550.000408001128,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-35",
+          "layer": "АР_Монолит",
+          "center_start": [
+            39829.739201169,
+            20488.72675955508
+          ],
+          "center_end": [
+            40379.72067877202,
+            20488.72480963028
+          ],
+          "length": 11499.969937802189,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-36",
+          "layer": "АР_Монолит",
+          "center_start": [
+            42779.72069821483,
+            20488.72359033066
+          ],
+          "center_end": [
+            43279.7394504025,
+            21888.7266559696
+          ],
+          "length": 4600.037784092285,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-37",
+          "layer": "АР_Газоблок 200мм",
+          "center_start": [
+            35829.73918335041,
+            27938.72584909803
+          ],
+          "center_end": [
+            35829.73921595974,
+            28138.72575217704
+          ],
+          "length": 799.9998061580244,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-38",
+          "layer": "АР_ГКЛ",
+          "center_start": [
+            35754.73918335053,
+            27938.72576032995
+          ],
+          "center_end": [
+            35754.73957103287,
+            28138.72566340896
+          ],
+          "length": 449.999806158756,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-39",
+          "layer": "АР_Газоблок наруж",
+          "center_start": [
+            39029.73960613448,
+            35638.72627603871
+          ],
+          "center_end": [
+            39829.73809525149,
+            35638.72627603871
+          ],
+          "length": 1999.996978234136,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-40",
+          "layer": "АР_Монолит",
+          "center_start": [
+            42729.74072724458,
+            35588.72627942587
+          ],
+          "center_end": [
+            43279.7392438217,
+            35788.72675955496
+          ],
+          "length": 4699.997497783818,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-41",
+          "layer": "АР_Монолит",
+          "center_start": [
+            39829.73919784999,
+            31013.70625655804
+          ],
+          "center_end": [
+            40629.74072724458,
+            35588.72628148596
+          ],
+          "length": 11550.044028287622,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-42",
+          "layer": "АР_Газоблок наруж",
+          "center_start": [
+            38878.31057152839,
+            20438.72627603882
+          ],
+          "center_end": [
+            39831.14908524201,
+            20438.72627603882
+          ],
+          "length": 2305.677027427366,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-43",
+          "layer": "АР_Газоблок наруж",
+          "center_start": [
+            36031.1504072377,
+            20438.72627603882
+          ],
+          "center_end": [
+            36031.1504072377,
+            20638.72627603888
+          ],
+          "length": 1294.3203285815034,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-44",
+          "layer": "АР_Газоблок 200мм",
+          "center_start": [
+            32529.73921621213,
+            29613.72675955502
+          ],
+          "center_end": [
+            33279.73831276334,
+            29613.72679216435
+          ],
+          "length": 1899.9981931024172,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-45",
+          "layer": "АР_Монолит",
+          "center_start": [
+            31729.74009734951,
+            35788.72541303243
+          ],
+          "center_end": [
+            33279.73840153142,
+            29538.72714723749
+          ],
+          "length": 16050.023268163324,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-46",
+          "layer": "АР_Монолит",
+          "center_start": [
+            43279.7392160205,
+            27288.72592475204
+          ],
+          "center_end": [
+            43279.73921621212,
+            23388.7266559696
+          ],
+          "length": 8199.998537564883,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-47",
+          "layer": "АР_Монолит",
+          "center_start": [
+            35829.73923125526,
+            35788.72675955496
+          ],
+          "center_end": [
+            36029.73923125526,
+            35788.72675955496
+          ],
+          "length": 9950.041001082034,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-48",
+          "layer": "АР_Монолит",
+          "center_start": [
+            43279.73909953882,
+            32888.72681175833
+          ],
+          "center_end": [
+            43479.73933288542,
+            32888.72681175833
+          ],
+          "length": 8600.002135877272,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-49",
+          "layer": "АР_Газоблок наруж",
+          "center_start": [
+            36029.73941724719,
+            35638.72627603871
+          ],
+          "center_end": [
+            36029.73941724719,
+            35838.72627603877
+          ],
+          "length": 1600.0003777758188,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-50",
+          "layer": "АР_Газоблок 200мм",
+          "center_start": [
+            23979.74011966091,
+            29613.72679216435
+          ],
+          "center_end": [
+            23979.74011966091,
+            29813.72679216435
+          ],
+          "length": 1899.998193102439,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-51",
+          "layer": "АР_Монолит",
+          "center_start": [
+            11829.74071220141,
+            35588.72545634693
+          ],
+          "center_end": [
+            12329.73921621212,
+            20488.72593647611
+          ],
+          "length": 33700.03443933715,
+          "source_type": "graph_component",
+          "thickness": null
+        },
+        {
+          "id": "wall-52",
+          "layer": "АР_Газоблок 200мм",
+          "center_start": [
+            33579.52306431096,
+            27663.75279974859
+          ],
+          "center_end": [
+            34779.73921621213,
+            27663.75283235809
+          ],
+          "length": 2800.432303802344,
+          "source_type": "graph_component",
+          "thickness": null
+        }
+      ]
+    },
+    "rooms_detection": {
+      "room_layers_used": [],
+      "total_polygons": 0,
+      "rooms": []
+    }
+  },
+  "summary": {
+    "rooms_count": 2,
+    "walls_count": 1,
+    "windows_count": 1,
+    "doors_count": 1,
+    "notes": "Части BIM-структуры пока тестовые (заглушка). Геометрия DXF анализируется отдельно."
+  },
+  "rooms": [
+    {
+      "id": "room-1",
+      "number": "101",
+      "name": "Комната 101",
+      "area": 18.5,
+      "perimeter": 17.2,
+      "floor": 1,
+      "level_mark": 0,
+      "boundary_polygon": [
+        [
+          0,
+          0
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          4.5
+        ],
+        [
+          0,
+          4.5
+        ]
+      ],
+      "enclosures": [
+        "wall-1",
+        "wall-2",
+        "wall-3",
+        "wall-4",
+        "window-1",
+        "door-1"
+      ]
+    },
+    {
+      "id": "room-2",
+      "number": "102",
+      "name": "Комната 102",
+      "area": 12.3,
+      "perimeter": 14.0,
+      "floor": 1,
+      "level_mark": 0,
+      "boundary_polygon": [
+        [
+          4,
+          0
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          4,
+          4
+        ]
+      ],
+      "enclosures": [
+        "wall-2",
+        "wall-5",
+        "wall-6",
+        "window-2"
+      ]
+    }
+  ],
+  "walls": [
+    {
+      "id": "wall-1",
+      "type": "outer",
+      "geometry": {
+        "points": [
+          [
+            0,
+            0
+          ],
+          [
+            4,
+            0
+          ]
+        ]
+      },
+      "length": 4.0,
+      "thickness": 0.25,
+      "floor": 1,
+      "start_room": "room-1",
+      "end_room": null,
+      "layer": "AR_WALL_OUTER"
+    }
+  ],
+  "windows": [
+    {
+      "id": "window-1",
+      "wall_id": "wall-1",
+      "position": [
+        2.0,
+        0.0
+      ],
+      "width": 1.2,
+      "height": 1.5,
+      "block_name": "W_1200x1500"
+    }
+  ],
+  "doors": [
+    {
+      "id": "door-1",
+      "wall_id": "wall-2",
+      "room_from": "room-1",
+      "room_to": "room-2",
+      "width": 0.9,
+      "height": 2.0,
+      "block_name": "DOOR_900"
+    }
+  ],
+  "qc_report": {
+    "errors": [],
+    "warnings": [],
+    "summary": "QC пока не выполняется, так как используется заглушка BIM-структуры."
+  }
+}

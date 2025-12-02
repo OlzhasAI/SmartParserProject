@@ -1,0 +1,139 @@
+{
+  "task_id": "42049bea-b94f-404e-a800-33cd18d4e8df",
+  "file_name": "42049bea-b94f-404e-a800-33cd18d4e8df_План второго этажа.dwg",
+  "processed_at": "2025-11-24T18:14:11.350649Z",
+  "source_info": {
+    "is_dxf": false,
+    "note": "Файл не в формате DXF. Анализ геометрии пока выполняется только для DXF."
+  },
+  "summary": {
+    "rooms_count": 2,
+    "walls_count": 4,
+    "windows_count": 2,
+    "doors_count": 1,
+    "notes": "Части BIM-структуры пока тестовые (заглушка). Геометрия DXF анализируется в поле source_info."
+  },
+  "rooms": [
+    {
+      "id": "room-1",
+      "number": "101",
+      "name": "Комната 101",
+      "area": 18.5,
+      "perimeter": 17.2,
+      "floor": 1,
+      "level_mark": 0.0,
+      "boundary_polygon": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          4.0,
+          0.0
+        ],
+        [
+          4.0,
+          4.5
+        ],
+        [
+          0.0,
+          4.5
+        ]
+      ],
+      "enclosures": [
+        "wall-1",
+        "wall-2",
+        "wall-3",
+        "wall-4",
+        "window-1",
+        "door-1"
+      ]
+    },
+    {
+      "id": "room-2",
+      "number": "102",
+      "name": "Комната 102",
+      "area": 12.3,
+      "perimeter": 14.0,
+      "floor": 1,
+      "level_mark": 0.0,
+      "boundary_polygon": [
+        [
+          4.0,
+          0.0
+        ],
+        [
+          7.0,
+          0.0
+        ],
+        [
+          7.0,
+          4.0
+        ],
+        [
+          4.0,
+          4.0
+        ]
+      ],
+      "enclosures": [
+        "wall-2",
+        "wall-5",
+        "wall-6",
+        "window-2"
+      ]
+    }
+  ],
+  "walls": [
+    {
+      "id": "wall-1",
+      "type": "outer",
+      "geometry": {
+        "points": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            4.0,
+            0.0
+          ]
+        ]
+      },
+      "length": 4.0,
+      "thickness": 0.25,
+      "floor": 1,
+      "start_room": "room-1",
+      "end_room": null,
+      "layer": "AR_WALL_OUTER"
+    }
+  ],
+  "windows": [
+    {
+      "id": "window-1",
+      "wall_id": "wall-1",
+      "position": [
+        2.0,
+        0.0
+      ],
+      "width": 1.2,
+      "height": 1.5,
+      "block_name": "W_1200x1500"
+    }
+  ],
+  "doors": [
+    {
+      "id": "door-1",
+      "wall_id": "wall-2",
+      "room_from": "room-1",
+      "room_to": "room-2",
+      "width": 0.9,
+      "height": 2.0,
+      "block_name": "DOOR_900"
+    }
+  ],
+  "qc_report": {
+    "errors": [],
+    "warnings": [],
+    "summary": "QC пока не выполняется, так как используется заглушка BIM-структуры."
+  }
+}

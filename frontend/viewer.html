@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <title>DXF Viewer</title>
+
+    <link rel="stylesheet" href="css/viewer.css" />
+  </head>
+
+  <body>
+    <div id="topbar">
+      <div class="title">DXF 2D/3D Viewer</div>
+
+      <div class="toolbar">
+        <button onclick="setMode('pan')" id="btnPan">Pan</button>
+        <button onclick="setMode('zoom')" id="btnZoom">Zoom</button>
+        <button onclick="setMode('orbit')" id="btnOrbit">Orbit</button>
+
+        <div class="divider"></div>
+
+        <button onclick="resetView()">Reset View</button>
+        <button onclick="fitToScreen()">Fit</button>
+
+        <div class="divider"></div>
+
+        <button onclick="toggleLayers()">Layers</button>
+      </div>
+    </div>
+
+    <div id="container">
+      <canvas id="dxfCanvas"></canvas>
+
+      <div id="layersPanel" class="panel hidden">
+        <h3>Слои</h3>
+        <div id="layersList"></div>
+      </div>
+    </div>
+
+    <script src="viewer_core.js"></script>
+    <script src="dxf_parser.js"></script>
+    <script src="viewer.js"></script>
+  </body>
+</html>

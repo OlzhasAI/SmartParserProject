@@ -1,0 +1,204 @@
+/* ============================
+   GLOBAL THEME — Revit Style
+   ============================ */
+body {
+    margin: 0;
+    font-family: "Segoe UI", Roboto, sans-serif;
+    background: #ECEDEF;
+    color: #2A2A2A;
+    user-select: none;
+    overflow: hidden;
+}
+
+/* ============================
+   TOP TOOLBAR
+   ============================ */
+#topbar {
+    height: 48px;
+    background: #F6F7F9;
+    border-bottom: 1px solid #D1D1D1;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+}
+
+.tab {
+    font-size: 14px;
+    padding: 10px 18px;
+    margin-right: 10px;
+    border-radius: 4px 4px 0 0;
+    cursor: pointer;
+    color: #444;
+}
+
+.tab:hover {
+    background: #E5E6E8;
+}
+
+.tab.active {
+    background: white;
+    border: 1px solid #D1D1D1;
+    border-bottom: 0;
+    color: #000;
+    font-weight: 600;
+}
+
+/* Toolbar buttons */
+.toolbar-actions {
+    margin-left: auto;
+}
+
+.btn {
+    padding: 6px 14px;
+    font-size: 14px;
+    border-radius: 3px;
+    border: 1px solid #C7C7C7;
+    background: #FFFFFF;
+    cursor: pointer;
+    margin-left: 8px;
+}
+
+.btn:hover {
+    background: #EEF0F2;
+}
+
+.btn:active {
+    background: #DDE0E3;
+}
+
+/* ============================
+   LAYOUT SPLIT
+   ============================ */
+#workspace {
+    width: 100vw;
+    height: calc(100vh - 48px);
+    display: grid;
+    grid-template-columns: 260px auto 340px;
+    grid-template-rows: 100%;
+}
+
+/* ============================
+   LEFT PANEL
+   ============================ */
+#leftPanel {
+    background: #F8F9FA;
+    border-right: 1px solid #D1D1D1;
+    padding: 12px;
+    overflow-y: auto;
+}
+
+#leftPanel h3 {
+    margin: 16px 0 8px 0;
+    font-size: 14px;
+    color: #333;
+}
+
+#layersList {
+    background: white;
+    border: 1px solid #CCC;
+    border-radius: 4px;
+    padding: 8px;
+    min-height: 100px;
+}
+
+/* Properties Panel */
+#propertiesPanel {
+    background: white;
+    border: 1px solid #CCC;
+    border-radius: 4px;
+    padding: 8px;
+    min-height: 160px;
+}
+
+/* ============================
+   CANVAS CONTAINER
+   ============================ */
+#canvasContainer {
+    position: relative;
+    background: #FFFFFF;
+}
+
+#viewerCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* ============================
+   RIGHT PANEL — BIM TABLE
+   ============================ */
+#rightPanel {
+    background: #F8F9FA;
+    border-left: 1px solid #D1D1D1;
+    padding: 12px;
+    overflow-y: auto;
+}
+
+#rightPanel h3 {
+    margin: 12px 0;
+    font-size: 15px;
+}
+
+#bimTable {
+    background: white;
+    border: 1px solid #CCC;
+    border-radius: 4px;
+    padding: 8px;
+}
+
+/* ============================
+   SCROLLBARS (Revit style)
+   ============================ */
+*::-webkit-scrollbar {
+    width: 10px;
+}
+
+*::-webkit-scrollbar-track {
+    background: #F1F1F1;
+}
+
+*::-webkit-scrollbar-thumb {
+    background: #C1C1C1;
+    border-radius: 3px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background: #A1A1A1;
+}
+
+/* ============================
+   PANELS SEPARATORS
+   ============================ */
+#leftPanel, #rightPanel {
+    box-shadow: inset 0 0 3px rgba(0,0,0,0.05);
+}
+
+/* ============================
+   TABLE STYLE (для BIM)
+   ============================ */
+.bim-row {
+    padding: 6px;
+    border-bottom: 1px solid #E1E1E1;
+}
+
+.bim-row:hover {
+    background: #EFEFEF;
+}
+
+.bim-key {
+    font-weight: 600;
+}
+
+.bim-value {
+    float: right;
+    color: #444;
+}
+
+/* ============================
+   PANEL HIGHLIGHT STATES
+   ============================ */
+.highlight {
+    outline: 2px solid #0078D7;
+    background: rgba(0,120,215,0.15);
+}
