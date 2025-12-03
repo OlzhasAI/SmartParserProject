@@ -141,7 +141,8 @@ def segments_are_parallel_and_collinear(seg1: Segment, seg2: Segment, angle_eps:
     distance = vector_distance_point_to_segment(seg2.start, seg1.start, seg1.end)
     
     # Проверяем, что толщина лежит в реалистичных пределах (80мм до 600мм, как ты просил)
-    if 0.08 < distance < 0.6: 
+    # Поддержка и метров (0.08 - 0.6) и миллиметров (80 - 600)
+    if (0.08 <= distance <= 0.6) or (80 <= distance <= 600):
         return True
         
     return False
