@@ -1,4 +1,4 @@
-// frontend/renderer.js — V2 HATCH SUPPORT
+// frontend/renderer.js — ФИНАЛЬНАЯ ВЕРСИЯ С ПОЛИГОНАМИ И ИНТЕРАКТОМ
 
 export class RendererCAD2D {
 
@@ -65,36 +65,8 @@ export class RendererCAD2D {
         this.objects.forEach(obj => {
             if (!obj.render) return;
 
-            // V2: SVG Path
-            if (obj.type === 'wall_svg' && obj.render.svgPath) {
-                // Парсим координаты из SVG строки
-                const tokens = obj.render.svgPath.split(/\s+/);
-                for (let t of tokens) {
-                    const val = parseFloat(t);
-                    if (!isNaN(val)) {
-                        // Эвристика: SVG path идет парами x y, но сложно понять где X где Y без парсинга команд.
-                        // Для bounds просто берем все числа. X и Y перемешаны, но min/max будет верным.
-                        // (Если бы мы искали ширину/высоту, это было бы опасно, но для bbox всего облака - ок)
-                        // НО: Если есть кривые (Q, C), там контрольные точки. Bounds будет включать контрольные точки.
-                        // Это приемлемо для fitToScreen.
-                        if (val < minX) minX = val;
-                        if (val > maxX) maxX = val;
-                        // Проблема: мы не знаем это X или Y.
-                        // Предположим, что координаты распределены равномерно.
-                        // Для надежности, парсим пары, зная что команды M, L, Q, C имеют структуру.
-                        // Но это сложно.
-                        // Упрощение: Ищем min/max по всем числам.
-                        // Это даст bounding SQUARE (max_coord, max_coord), что может быть неточно, но безопасно (камера захватит все).
-                        // Лучше: разделить на четные/нечетные? Нет, команды разной длины.
-                        // Оставим "все числа" как грубую оценку.
-                        if (val < minY) minY = val; // Временно
-                        if (val > maxY) maxY = val;
-                    }
-                }
-                hasGeometry = true;
-            }
-            // V1: Полигоны
-            else if (obj.render.points) {
+            // Полигоны (Points)
+            if (obj.render.points) {
                 obj.render.points.forEach(p => {
                     minX = Math.min(minX, p[0]);
                     minY = Math.min(minY, p[1]);
@@ -103,7 +75,7 @@ export class RendererCAD2D {
                 });
                 hasGeometry = true;
             }
-            // V1: Линии
+            // Линии (x1, y1...)
             else if (obj.render.x1 !== undefined) {
                 minX = Math.min(minX, obj.render.x1, obj.render.x2);
                 minY = Math.min(minY, obj.render.y1, obj.render.y2);
@@ -111,7 +83,7 @@ export class RendererCAD2D {
                 maxY = Math.max(maxY, obj.render.y1, obj.render.y2);
                 hasGeometry = true;
             }
-            // V1: Точки
+            // Точки вставки (Openings)
             else if (obj.render.x !== undefined) {
                 minX = Math.min(minX, obj.render.x);
                 minY = Math.min(minY, obj.render.y);
@@ -178,6 +150,7 @@ export class RendererCAD2D {
         const mouseX = e.clientX - rect.left;
         const mouseY = e.clientY - rect.top;
 
+        // 1. Паннинг (Перемещение)
         if (this.drag) {
             const dx = e.clientX - this.lastX;
             const dy = e.clientY - this.lastY;
@@ -192,37 +165,19 @@ export class RendererCAD2D {
             return;
         }
 
-        // Hover
-        // Для V2 (SVG) нам нужны экранные координаты для isPointInPath с трансформом
-        // Для V1 (Polygon) нам нужны мировые
+        // 2. Ховер (Hit Testing)
+        // Переводим координаты мыши в мировые
         const wx = mouseX / this.scale - this.offsetX;
         const wy = (this.canvas.height - mouseY) / this.scale - this.offsetY;
 
-        this._checkHover(wx, wy, mouseX, mouseY);
+        this._checkHover(wx, wy);
     }
 
-    _checkHover(wx, wy, sx, sy) {
+    _checkHover(wx, wy) {
+        // Ищем верхний объект под курсором
         const hit = this.objects.find(obj => {
             if (this.layerVisibility[obj.layer] === false) return false;
 
-            // V2: SVG Path
-            if (obj.type === 'wall_svg' && obj.render.path2d) {
-                // Применяем трансформ к контексту временно, чтобы проверить точку
-                this.ctx.save();
-                this._applyWorldTransform();
-                // isPointInPath проверяет точку в ТЕКУЩЕМ трансформе?
-                // Документация: "The x and y coordinates ... are in the current coordinate system."
-                // Значит если мы применили трансформ, мы должны передавать координаты В ЭТОЙ СИСТЕМЕ (т.е. мировые)?
-                // НЕТ. isPointInPath обычно принимает экранные координаты, и проверяет попадают ли они в путь, нарисованный с текущим трансформом.
-                // Проверим: "isPointInPath(x, y) ... checks if the point (x, y) is inside the area contained by the path."
-                // В большинстве реализаций это "screen space" point vs "transformed path".
-                // Попробуем передать SX, SY.
-                const isInside = this.ctx.isPointInPath(obj.render.path2d, sx, sy);
-                this.ctx.restore();
-                return isInside;
-            }
-
-            // V1: Polygon
             if (obj.type === 'wall_polygon' && obj.render.points) {
                 return this._isPointInPolygon([wx, wy], obj.render.points);
             }
@@ -233,19 +188,21 @@ export class RendererCAD2D {
             this.hoveredObject = hit;
 
             if (hit) {
+                // Обновляем панель инфо
                 const mat = hit.material ? hit.material.toUpperCase() : "UNKNOWN";
                 const th = hit.thickness ? `Thickness: ${hit.thickness}mm` : "";
-                this.infoPanel.innerHTML = `<b>${hit.type}</b><br>Material: ${mat}<br>${th}`;
+                this.infoPanel.innerHTML = `<b>WALL</b><br>Material: ${mat}<br>${th}`;
                 this.canvas.style.cursor = "pointer";
             } else {
                 this.infoPanel.innerHTML = "Инфо: наведите на объект";
                 this.canvas.style.cursor = "crosshair";
             }
 
-            this.requestRender();
+            this.requestRender(); // Перерисовываем, если хотим подсветку (опционально)
         }
     }
 
+    // Алгоритм Ray-Casting для точки в полигоне
     _isPointInPolygon(pt, polygon) {
         const x = pt[0], y = pt[1];
         let inside = false;
@@ -319,35 +276,11 @@ export class RendererCAD2D {
     }
     
     _drawEntity(obj) {
-        // --- V2: SVG WALLS ---
-        if (obj.type === 'wall_svg' && obj.render.path2d) {
-            this.ctx.save();
-            this._applyWorldTransform(); // Переходим в мировые координаты
-
-            // Fill
-            if (this.hoveredObject === obj) {
-                this.ctx.fillStyle = "#ffff00";
-            } else {
-                this.ctx.fillStyle = obj.render.fillColor || "#999";
-            }
-            this.ctx.fill(obj.render.path2d);
-
-            // Stroke (Non-scaling width emulation)
-            // Чтобы толщина линии не менялась при зуме, нужно делить на scale
-            this.ctx.strokeStyle = obj.render.strokeColor || "#000";
-            this.ctx.lineWidth = (obj.render.lineWidth || 1) / this.scale;
-            this.ctx.stroke(obj.render.path2d);
-
-            this.ctx.restore();
-            return;
-        }
-
-        // --- V1: POLYGONS ---
+        // --- 1. СМАРТ СТЕНЫ (ПОЛИГОНЫ) ---
         if (obj.type === 'wall_polygon') {
              const { points, fillColor, strokeColor, lineWidth } = obj.render;
              if (!points || points.length < 2) return;
 
-             this.ctx.setTransform(1, 0, 0, 1, 0, 0); // Рисуем в экранных (ручная проекция)
              this.ctx.beginPath();
              const start = this.worldToScreen(points[0][0], points[0][1]);
              this.ctx.moveTo(start.sx, start.sy);
@@ -358,8 +291,9 @@ export class RendererCAD2D {
              }
              this.ctx.closePath();
 
+             // Подсветка при наведении
              if (this.hoveredObject === obj) {
-                 this.ctx.fillStyle = "#ffff00";
+                 this.ctx.fillStyle = "#ffff00"; // Yellow highlight
              } else {
                  this.ctx.fillStyle = fillColor || "#999";
              }
@@ -371,10 +305,7 @@ export class RendererCAD2D {
              return;
         }
 
-        // --- V1: OPENINGS & LINES ---
-        // Рисуем в экранных координатах
-        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-
+        // --- 2. РИСОВАНИЕ ПРОЕМОВ (ДВЕРИ/ОКНА) ---
         if (obj.type === 'opening') {
             const { x, y, width, height, rotation, color } = obj.render;
             if (x === undefined) return;
@@ -384,14 +315,24 @@ export class RendererCAD2D {
             this.ctx.translate(screenPos.sx, screenPos.sy);
             this.ctx.rotate(-rotation * Math.PI / 180);
             
-            const w_final = Math.max(width * 1000 * this.scale, 3);
-            const h_final = Math.max(height * 1000 * this.scale, 3);
+            const w_world_units = width * 1000;
+            const h_world_units = height * 1000; 
+            
+            const w_scaled = w_world_units * this.scale;
+            const h_scaled = h_world_units * this.scale;
+            
+            const MIN_VISIBLE_PIXELS = 3; 
+            const w_final = Math.max(w_scaled, MIN_VISIBLE_PIXELS);
+            const h_final = Math.max(h_scaled, MIN_VISIBLE_PIXELS);
             
             this.ctx.fillStyle = color || "#00aaff";
             this.ctx.fillRect(-w_final / 2, -h_final / 2, w_final, h_final);
             this.ctx.restore();
             return;
         }
+
+        // --- 3. РИСОВАНИЕ СТАРЫХ СТЕН (ЛИНЕЙНЫЕ) ---
+        const { x1, y1, x2, y2, color, lineWidth } = obj.render;
         
         // Lines
         const { x1, y1, x2, y2, color, lineWidth } = obj.render;

@@ -144,10 +144,6 @@ def _path_to_svg(p: path.Path) -> str:
     return " ".join(parts)
 
 def extract_walls_v2(doc) -> List[Dict[str, Any]]:
-    # LOG 1: Layer Summary
-    layer_names = sorted([layer.dxf.name for layer in doc.layers])
-    print(f"DEBUG: DXF contains layers: {layer_names}")
-
     mapper = MaterialMapper(doc)
     msp = doc.modelspace()
     walls = []
@@ -155,19 +151,12 @@ def extract_walls_v2(doc) -> List[Dict[str, Any]]:
     # Filter keywords for layers
     WALL_KEYWORDS = ["WALL", "STEN", "MONOLIT", "BLOCK", "BRICK", "GAS", "PARTITION", "PEREG"]
 
-    all_hatches = list(msp.query("HATCH"))
-    # LOG 2: Total Hatch Count
-    print(f"DEBUG: Total HATCH entities found in model space: {len(all_hatches)}")
-
     count = 0
-    skipped_layers = set()
-
-    for hatch in all_hatches:
+    for hatch in msp.query("HATCH"):
         layer_name = hatch.dxf.layer
 
         # Filter by Layer
         if not any(k in layer_name.upper() for k in WALL_KEYWORDS):
-            skipped_layers.add(layer_name)
             continue
 
         # Get Material
@@ -184,10 +173,6 @@ def extract_walls_v2(doc) -> List[Dict[str, Any]]:
             svg_parts = []
 
             sub_paths = path.from_hatch(hatch)
-
-            if not sub_paths:
-                 print(f"DEBUG: Hatch {hatch.dxf.handle} on layer {layer_name} has no valid boundary paths.")
-                 continue
 
             for p in sub_paths:
                 svg_parts.append(_path_to_svg(p))
@@ -206,12 +191,8 @@ def extract_walls_v2(doc) -> List[Dict[str, Any]]:
             count += 1
 
         except Exception as e:
-            # LOG 3: Hatch Boundary Check (Exception)
-            print(f"DEBUG: Error processing hatch {hatch.dxf.handle} on layer {layer_name}: {e}")
+            print(f"Error processing hatch {hatch.dxf.handle}: {e}")
             continue
-
-    if skipped_layers:
-        print(f"DEBUG: Hatches filtered out from layers: {list(skipped_layers)}")
 
     print(f"DEBUG: V2 Parser found {count} hatched walls.")
     return walls
