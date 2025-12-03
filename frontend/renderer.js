@@ -36,7 +36,11 @@ export class RendererCAD2D {
     loadGeometry(objects) {
         this.objects = objects;
 
+        // Кэшируем Path2D объекты для производительности
         this.objects.forEach(obj => {
+            if (obj.type === 'wall_svg' && obj.render.svgPath) {
+                obj.render.path2d = new Path2D(obj.render.svgPath);
+            }
             if (obj.layer && this.layerVisibility[obj.layer] === undefined) {
                 this.layerVisibility[obj.layer] = true;
             }
@@ -244,14 +248,29 @@ export class RendererCAD2D {
         };
     }
 
+    _applyWorldTransform() {
+        // Устанавливает матрицу трансформации Canvas, чтобы рисовать в мировых координатах
+        // sx = (wx + offX) * sc = wx*sc + offX*sc
+        // sy = H - (wy + offY) * sc = -wy*sc + (H - offY*sc)
+
+        const sc = this.scale;
+        const tx = this.offsetX * sc;
+        const ty = this.canvas.height - this.offsetY * sc;
+
+        // setTransform(h_scale, v_skew, h_skew, v_scale, h_trans, v_trans)
+        this.ctx.setTransform(sc, 0, 0, -sc, tx, ty);
+    }
+
     render() {
+        // Сброс трансформации для очистки
+        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
         this.ctx.fillStyle = "#fff"; 
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
         if (this.objects) {
             this.objects.forEach(obj => {
                 if (this.layerVisibility[obj.layer] === false) return;
-                if (obj.render) this._drawEntity(obj);
+                this._drawEntity(obj);
             });
         }
     }
@@ -292,9 +311,7 @@ export class RendererCAD2D {
             if (x === undefined) return;
 
             const screenPos = this.worldToScreen(x, y);
-            
             this.ctx.save();
-            
             this.ctx.translate(screenPos.sx, screenPos.sy);
             this.ctx.rotate(-rotation * Math.PI / 180);
             
@@ -310,7 +327,6 @@ export class RendererCAD2D {
             
             this.ctx.fillStyle = color || "#00aaff";
             this.ctx.fillRect(-w_final / 2, -h_final / 2, w_final, h_final);
-            
             this.ctx.restore();
             return;
         }
@@ -318,10 +334,11 @@ export class RendererCAD2D {
         // --- 3. РИСОВАНИЕ СТАРЫХ СТЕН (ЛИНЕЙНЫЕ) ---
         const { x1, y1, x2, y2, color, lineWidth } = obj.render;
         
-        if (x1 !== undefined && y1 !== undefined) {
+        // Lines
+        const { x1, y1, x2, y2, color, lineWidth } = obj.render;
+        if (x1 !== undefined) {
             const p1 = this.worldToScreen(x1, y1);
             const p2 = this.worldToScreen(x2, y2);
-
             this.ctx.beginPath();
             this.ctx.strokeStyle = color || "#000"; 
             this.ctx.lineWidth = (lineWidth || 1); 

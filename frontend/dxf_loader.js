@@ -2,16 +2,15 @@
 
 export default class DxfLoader {
     static loadFromAPI(bimData, renderer) {
-        // 1. Проверка входящих данных
-        if (!bimData || !bimData.plan) {
-            console.warn("Нет данных плана в ответе API");
+        if (!bimData) {
+            console.warn("Нет данных в ответе API");
             return;
         }
 
         const renderObjects = [];
 
         // =========================================================
-        // 2. ОБРАБОТКА СТЕН (Walls)
+        // SCENE V2 (HATCH-BASED)
         // =========================================================
         if (bimData.plan.walls) {
             console.log(`Загружено стен из API: ${bimData.plan.walls.length}`);
@@ -81,6 +80,9 @@ export default class DxfLoader {
                     });
                 }
             });
+
+            // Openings/Rooms placeholder if V2 supported them
+            // ...
         }
 
         // =========================================================
@@ -105,7 +107,16 @@ export default class DxfLoader {
                         color: color
                     }
                 });
-            });
+             }
+             if (bimData.plan.openings) {
+                 bimData.plan.openings.forEach(op => {
+                     const color = op.type === 'window' ? '#00aaff' : '#8B4513';
+                     renderObjects.push({
+                         id: op.id, type: 'opening',
+                         render: { x: op.position[0], y: op.position[1], width: op.width, height: 0.2, rotation: op.rotation, color }
+                     });
+                 });
+             }
         }
 
         // =========================================================
