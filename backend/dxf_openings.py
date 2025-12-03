@@ -4,7 +4,7 @@ from __future__ import annotations
 from typing import List, Dict, Any, Optional, Tuple
 import math
 import ezdxf
-from ezdxf.math import Vec3, Matrix44
+from ezdxf.math import Matrix44, Vec3, BoundingBox
 
 from wall_graph import vector_distance_point_to_segment
 
@@ -18,58 +18,58 @@ LAYER_KEYWORDS = {
 MAX_DISTANCE_TOLERANCE = 1000.0 
 # ---------------------------------
 
-def get_block_geometry_center(insert: ezdxf.entities.Insert, doc: ezdxf.EzDxfDocument) -> Tuple[float, float]:
+def get_transformed_block_geometry_center(insert: ezdxf.entities.Insert, block: ezdxf.layouts.BlockLayout) -> Optional[Tuple[float, float]]:
     """
-    Вычисляет центр геометрии блока в глобальных координатах,
-    применяя матрицу трансформации (сдвиг, поворот, масштаб)
-    ко всем линиям внутри блока.
+    Вычисляет центр геометрии блока в мировых координатах, применяя трансформацию вставки.
     """
-    block_name = insert.dxf.name
-    if block_name not in doc.blocks:
-        return float(insert.dxf.insert.x), float(insert.dxf.insert.y)
+    # Матрица трансформации из вставки (перемещение, масштаб, поворот)
+    m = insert.matrix44()
 
-    block = doc.blocks.get(block_name)
-    matrix = insert.matrix44()
+    points = []
 
-    min_x, min_y = float('inf'), float('inf')
-    max_x, max_y = float('-inf'), float('-inf')
-    found_geometry = False
-
+    # Собираем точки из примитивов внутри блока
     for entity in block:
-        points = []
-        if entity.dxftype() == 'LINE':
-            points = [entity.dxf.start, entity.dxf.end]
-        elif entity.dxftype() == 'LWPOLYLINE':
-            # LWPolyline точки могут быть 2D
-            points = entity.get_points('xy')
-            # Конвертируем в Vec3 для корректной работы matrix.transform_vertices
-            points = [Vec3(p[0], p[1], 0) for p in points]
-        elif entity.dxftype() == 'POLYLINE':
-             points = list(entity.points())
+        try:
+            if entity.dxftype() == 'LINE':
+                points.append(entity.dxf.start)
+                points.append(entity.dxf.end)
+            elif entity.dxftype() == 'LWPOLYLINE':
+                # get_points возвращает (x, y, start_width, end_width, bulge)
+                pts = entity.get_points('xy')
+                for p in pts:
+                    points.append(Vec3(p[0], p[1], 0))
+            elif entity.dxftype() == 'CIRCLE':
+                # Для круга берем центр и точки на окружности (упрощенно bbox)
+                c = entity.dxf.center
+                r = entity.dxf.radius
+                points.append(c + Vec3(r, 0, 0))
+                points.append(c + Vec3(-r, 0, 0))
+                points.append(c + Vec3(0, r, 0))
+                points.append(c + Vec3(0, -r, 0))
+            # Можно добавить другие типы (ARC, POLYLINE и т.д.)
+        except Exception:
+            pass
 
-        if points:
-            # Трансформируем точки в глобальные координаты
-            transformed_points = list(matrix.transform_vertices([Vec3(p) for p in points]))
+    if not points:
+        return None
 
-            for p in transformed_points:
-                found_geometry = True
-                if p.x < min_x: min_x = p.x
-                if p.x > max_x: max_x = p.x
-                if p.y < min_y: min_y = p.y
-                if p.y > max_y: max_y = p.y
+    # Трансформируем точки
+    transformed_points = list(m.transform_vertices(points))
 
-    if not found_geometry:
-        # Если геометрии нет, возвращаем точку вставки
-        return float(insert.dxf.insert.x), float(insert.dxf.insert.y)
+    if not transformed_points:
+        return None
 
-    center_x = (min_x + max_x) / 2
-    center_y = (min_y + max_y) / 2
-    return center_x, center_y
+    # Вычисляем BoundingBox
+    bbox = BoundingBox(transformed_points)
+    center = bbox.center
+
+    return (center.x, center.y)
 
 
 def analyze_openings(doc: ezdxf.EzDxfDocument, walls: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """
     Ищет блоки (INSERT) по имени блока ИЛИ по имени слоя, и привязывает их к ближайшей стене.
+    Возвращает ГЛОБАЛЬНЫЕ координаты объектов.
     """
     msp = doc.modelspace()
     openings = []
@@ -82,7 +82,8 @@ def analyze_openings(doc: ezdxf.EzDxfDocument, walls: List[Dict[str, Any]]) -> L
     print(f"DEBUG: Допуск на привязку (мм): {MAX_DISTANCE_TOLERANCE}")
     
     for insert in all_inserts:
-        name = insert.dxf.name.upper()
+        name = insert.dxf.name # Case sensitive lookup in blocks
+        dxf_name_upper = name.upper()
         layer = insert.dxf.layer.upper()
         
         opening_type = None
@@ -95,25 +96,38 @@ def analyze_openings(doc: ezdxf.EzDxfDocument, walls: List[Dict[str, Any]]) -> L
             
         # 2. Проверка по имени БЛОКА (если слой не помог)
         if not opening_type:
-            if any(k in name for k in LAYER_KEYWORDS["WINDOW"]):
+            if any(k in dxf_name_upper for k in LAYER_KEYWORDS["WINDOW"]):
                 opening_type = "window"
-            elif any(k in name for k in LAYER_KEYWORDS["DOOR"]):
+            elif any(k in dxf_name_upper for k in LAYER_KEYWORDS["DOOR"]):
                 opening_type = "door"
             
         if not opening_type:
             # Блок пропущен, потому что не похож на проем
             continue
             
-        # 3. ИЗВЛЕЧЕНИЕ ПАРАМЕТРОВ (с учетом трансформации)
-        # Получаем реальные координаты центра объекта через трансформацию геометрии блока
-        real_x, real_y = get_block_geometry_center(insert, doc)
-        rotation = float(insert.dxf.rotation)
+        # 3. ИЗВЛЕЧЕНИЕ ПАРАМЕТРОВ (если блок прошел фильтр)
         
+        # Попытка получить глобальные координаты геометрии
+        global_pos = None
+        if name in doc.blocks:
+            block_def = doc.blocks[name]
+            global_pos = get_transformed_block_geometry_center(insert, block_def)
+
+        if global_pos:
+            x, y = global_pos
+        else:
+            # Fallback: используем точку вставки, если геометрия пуста
+            x = float(insert.dxf.insert.x)
+            y = float(insert.dxf.insert.y)
+
+        rotation = float(insert.dxf.rotation)
         scale_x = abs(insert.dxf.xscale)
         width = scale_x 
         
-        # Логика определения ширины остается прежней (по скейлу),
-        # но можно было бы улучшить через bbox (max_x - min_x)
+        # Эвристика для ширины (если координаты в мм, то переводим в м)
+        # Но это спорно, если весь проект в мм.
+        # Пока оставляем как было, чтобы не ломать логику размеров,
+        # но помним, что координаты теперь ТОЧНЫЕ.
         if width > 50: 
             width /= 1000.0
         elif width < 0.2:
@@ -123,7 +137,7 @@ def analyze_openings(doc: ezdxf.EzDxfDocument, walls: List[Dict[str, Any]]) -> L
         host_wall_id = None
         min_dist = float('inf')
         
-        p_insert = (real_x, real_y)
+        p_insert = (x, y)
         
         for wall in walls:
             w_start = wall['start']
@@ -142,15 +156,15 @@ def analyze_openings(doc: ezdxf.EzDxfDocument, walls: List[Dict[str, Any]]) -> L
                 "id": f"opening-{len(openings)+1}",
                 "type": opening_type,
                 "layer": insert.dxf.layer,
-                "position": [real_x, real_y],
+                "position": [x, y], # Теперь это глобальные координаты центра геометрии
                 "width": round(width, 2),
                 "rotation": rotation,
                 "wall_id": host_wall_id,
-                "block_name": name
+                "block_name": dxf_name_upper
             })
         else:
             # DEBUG: Причина 2: Блок найден, но не привязался к стене
-            print(f"SKIP: Блок {name} ({opening_type}) не привязался к стене (Min Dist: {min_dist} at {real_x:.2f}, {real_y:.2f}).")
+            print(f"SKIP: Блок {dxf_name_upper} ({opening_type}) не привязался к стене (Min Dist: {min_dist}).")
 
     print(f"DEBUG: Финальное количество найденных проемов: {len(openings)}")
     print("-" * 50)
