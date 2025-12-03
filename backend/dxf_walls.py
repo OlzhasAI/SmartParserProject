@@ -1,6 +1,6 @@
 from __future__ import annotations
 import math
-from dataclasses import dataclass # <--- ЭТОТ ИМПОРТ ДОЛЖЕН БЫТЬ
+from dataclasses import dataclass
 from typing import List, Tuple, Dict, Any
 
 import ezdxf
@@ -10,9 +10,10 @@ from wall_graph import (
     Segment, 
     segments_are_parallel_and_collinear, 
     vector_distance_point_to_segment,
-    get_segment_direction
+    get_segment_direction,
+    vector_normalize
 ) 
-from dxf_walls_utils import calculate_midline_segment # <-- Эту функцию мы добавим ниже
+from dxf_walls_utils import calculate_midline_segment
 
 # Заменяем Tuple на стандартный тип tuple
 Point = tuple[float, float]
@@ -75,7 +76,50 @@ class Wall:
 
 
 # -------------------------------------------------------------------
-# 3. Парсинг геометрии
+# 3. Утилиты
+# -------------------------------------------------------------------
+
+def determine_material(layer_name: str) -> str:
+    """Определяет материал стены по имени слоя."""
+    layer = layer_name.upper()
+    if any(x in layer for x in ["MONOLIT", "ЖЕЛЕЗОБЕТОН", "CONCRETE", "МОНОЛИТ"]):
+        return "concrete"
+    if any(x in layer for x in ["GAS", "BLOCK", "ГАЗОБЛОК", "KIRPICH", "BRICK", "БЛОК", "КИРПИЧ"]):
+        return "brick"
+    if any(x in layer for x in ["PEREG", "GKL", "PARTITION", "ПЕРЕГОРОДКИ", "ГКЛ"]):
+        return "partition"
+    return "generic"
+
+def to_mm(val: float) -> float:
+    """Конвертирует значение в мм, если оно похоже на метры (меньше 50)."""
+    # Эвристика: стены толщиной > 50м не бывают, значит это мм.
+    # Стены < 50 единиц считаем метрами (0.2м = 200мм).
+    if val < 50.0:
+        return val * 1000.0
+    return val
+
+def _get_wall_polygon_corners(start: Point, end: Point, thickness: float) -> List[Point]:
+    """Генерирует 4 угла для стены, заданной осевой линией и толщиной."""
+    dx = end[0] - start[0]
+    dy = end[1] - start[1]
+
+    # Нормаль к вектору стены
+    # Вектор (-dy, dx) перпендикулярен (dx, dy)
+    normal = vector_normalize((-dy, dx))
+
+    half_t = thickness / 2.0
+    ox = normal[0] * half_t
+    oy = normal[1] * half_t
+
+    p1 = (start[0] + ox, start[1] + oy)
+    p2 = (end[0] + ox, end[1] + oy)
+    p3 = (end[0] - ox, end[1] - oy)
+    p4 = (start[0] - ox, start[1] - oy)
+
+    return [p1, p2, p3, p4]
+
+# -------------------------------------------------------------------
+# 4. Парсинг геометрии
 # -------------------------------------------------------------------
 
 def _collect_segments(doc: ezdxf.EzDxfDocument) -> List[Segment]:
@@ -86,7 +130,9 @@ def _collect_segments(doc: ezdxf.EzDxfDocument) -> List[Segment]:
 
     for entity in msp.query('LINE LWPOLYLINE'):
         layer = entity.dxf.layer
-        if layer not in WALL_LAYERS_CANDIDATES:
+        # Проверка по ключевым словам (substring match)
+        layer_upper = layer.upper()
+        if not any(k.upper() in layer_upper for k in WALL_LAYERS_CANDIDATES):
             continue
 
         if entity.dxftype() == 'LINE':
@@ -109,10 +155,8 @@ def _collect_segments(doc: ezdxf.EzDxfDocument) -> List[Segment]:
 
 
 # -------------------------------------------------------------------
-# 4. Основной анализ
+# 5. Основной анализ
 # -------------------------------------------------------------------
-
-# backend/dxf_walls.py
 
 def analyze_walls(doc: ezdxf.EzDxfDocument) -> Dict[str, Any]:
     """Основная точка входа для API."""
@@ -148,15 +192,38 @@ def analyze_walls(doc: ezdxf.EzDxfDocument) -> Dict[str, Any]:
             # Вычисляем осевую
             mid_start, mid_end = calculate_midline_segment(seg1, seg2) 
 
+            # Определяем координаты полигона (4 угла)
+            # Нужно правильно упорядочить точки двух сегментов
+            dist_start_to_start = math.dist(seg1.start, seg2.start)
+            dist_start_to_end = math.dist(seg1.start, seg2.end)
+
+            if dist_start_to_start < dist_start_to_end:
+                 # Сонаправлены
+                 # Порядок обхода: Start1 -> End1 -> End2 -> Start2 -> Start1
+                 corners = [seg1.start, seg1.end, seg2.end, seg2.start]
+            else:
+                 # Противонаправлены (seg2 перевернут относительно seg1)
+                 # Порядок обхода: Start1 -> End1 -> Start2 -> End2 -> Start1
+                 corners = [seg1.start, seg1.end, seg2.start, seg2.end]
+
+            material = determine_material(seg1.layer)
+            thickness_mm = round(to_mm(best_thickness), 1)
+
             walls.append({
                 "id": f"wall-{wall_id}",
+                "type": "wall",
                 "layer": seg1.layer,
-                # ВАЖНО: Используем ключи 'start' и 'end', чтобы фронтенд понял!
+                "material": material,
+
+                # Геометрия для совместимости (осевая)
                 "start": mid_start, 
                 "end": mid_end,
                 "length": math.dist(mid_start, mid_end),
-                "thickness": round(best_thickness, 3),
+
+                # Новые поля
+                "thickness": thickness_mm,
                 "source_type": "paired_thick_wall",
+                "coordinates": corners,
             })
             processed_indices.add(i)
             processed_indices.add(best_pair)
@@ -165,16 +232,50 @@ def analyze_walls(doc: ezdxf.EzDxfDocument) -> Dict[str, Any]:
     # 2. Обработка ОСТАВШИХСЯ СЕГМЕНТОВ
     remaining_segments = [seg for i, seg in segments if i not in processed_indices]
     
+    DEFAULT_THICKNESS = 0.1 # Метры, если координаты в метрах
+    # Но если проект в мм, это 0.1 мм?
+    # Давайте попробуем угадать масштаб по длине сегментов?
+    # Или просто использовать константу, которую потом to_mm превратит в 100мм.
+
+    # Для одиночных линий считаем толщину 100 мм по дефолту
+
     for seg in remaining_segments:
+        material = determine_material(seg.layer)
+
+        # Генерируем полигон искусственно (расширяем линию)
+        # Предполагаем thickness 100mm (0.1m) если это перегородка
+        # Если это несущая стена (MONOLIT), может 200mm?
+        if material == "concrete":
+            assumed_thickness = 0.2
+        elif material == "brick":
+            assumed_thickness = 0.2
+        elif material == "partition":
+            assumed_thickness = 0.1
+        else:
+            assumed_thickness = 0.1
+
+        # Проверяем масштаб координат. Если длина сегмента > 1000, то скорее всего мм.
+        # Тогда assumed_thickness тоже должен быть в мм (100, 200).
+        if seg.length > 500: # Скорее всего мм
+             assumed_thickness *= 1000.0
+
+        thickness_mm = round(to_mm(assumed_thickness), 1)
+
+        corners = _get_wall_polygon_corners(seg.start, seg.end, assumed_thickness)
+
         walls.append({
             "id": f"wall-{wall_id}",
+            "type": "wall",
             "layer": seg.layer,
-            # ВАЖНО: Используем ключи 'start' и 'end'
+            "material": material,
+
             "start": seg.start,
             "end": seg.end,
             "length": seg.length,
-            "thickness": 0.1, 
+
+            "thickness": thickness_mm,
             "source_type": "single_line_wall",
+            "coordinates": corners,
         })
         wall_id += 1
         
