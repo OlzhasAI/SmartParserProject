@@ -12,22 +12,73 @@ export default class DxfLoader {
         // =========================================================
         // SCENE V2 (HATCH-BASED)
         // =========================================================
-        if (bimData.scene && bimData.scene.walls) {
-            console.log(`Загружено стен (V2): ${bimData.scene.walls.length}`);
+        if (bimData.plan.walls) {
+            console.log(`Загружено стен из API: ${bimData.plan.walls.length}`);
 
-            bimData.scene.walls.forEach(wall => {
-                renderObjects.push({
-                    id: wall.id,
-                    layer: "WALLS_V2", // Dummy layer
-                    type: 'wall_svg',
-                    material: wall.material,
-                    render: {
-                        svgPath: wall.svgPath,
-                        fillColor: wall.color,
-                        strokeColor: "#000000",
-                        lineWidth: 1
+            bimData.plan.walls.forEach(wall => {
+
+                // --- ЛОГИКА SMART WALLS (ПОЛИГОНЫ) ---
+                if (wall.coordinates && wall.coordinates.length >= 3) {
+
+                    // Определяем цвет заливки по материалу
+                    let fillColor = "#999999"; // Default Gray
+                    let strokeColor = "#000000";
+
+                    switch (wall.material) {
+                        case 'concrete':
+                            fillColor = "#A9A9A9"; // Dark Gray
+                            break;
+                        case 'brick':
+                            fillColor = "#CD5C5C"; // Reddish
+                            break;
+                        case 'partition':
+                            fillColor = "#D3D3D3"; // Light Gray
+                            strokeColor = "#444444";
+                            break;
                     }
-                });
+
+                    renderObjects.push({
+                        id: wall.id,
+                        layer: wall.layer || "WALLS",
+                        type: 'wall_polygon', // Новый тип для полигонов
+                        material: wall.material,
+                        thickness: wall.thickness,
+                        render: {
+                            points: wall.coordinates, // [[x,y], [x,y], ...]
+                            fillColor: fillColor,
+                            strokeColor: strokeColor,
+                            lineWidth: 1
+                        }
+                    });
+
+                } else {
+                    // --- FALLBACK: ЛИНЕЙНЫЕ СТЕНЫ ---
+                    let p1, p2;
+
+                    if (wall.start && wall.end) {
+                        p1 = wall.start;
+                        p2 = wall.end;
+                    } else if (wall.geometry && wall.geometry.points) {
+                        p1 = wall.geometry.points[0];
+                        p2 = wall.geometry.points[1];
+                    } else {
+                        return;
+                    }
+
+                    renderObjects.push({
+                        id: wall.id,
+                        layer: wall.layer || "WALLS",
+                        type: 'wall_line',
+                        render: {
+                            x1: p1[0],
+                            y1: p1[1],
+                            x2: p2[0],
+                            y2: p2[1],
+                            color: "#000000",
+                            lineWidth: 2
+                        }
+                    });
+                }
             });
 
             // Openings/Rooms placeholder if V2 supported them
@@ -35,32 +86,25 @@ export default class DxfLoader {
         }
 
         // =========================================================
-        // LEGACY PLAN (V1)
+        // 3. ОБРАБОТКА ДВЕРЕЙ И ОКОН (Openings)
         // =========================================================
-        else if (bimData.plan) {
-             // ... Old logic code ...
-             // (Keeping it for safety if needed, or replacing?)
-             // The prompt says "Update", usually implies replacement or extension.
-             // Given I replaced backend entirely to V2, V1 data won't come.
-             // But I'll keep the logic if structure matches V1 for resilience.
-
-             if (bimData.plan.walls) {
-                bimData.plan.walls.forEach(wall => {
-                    if (wall.coordinates && wall.coordinates.length >= 3) {
-                         let fillColor = "#999999";
-                         switch (wall.material) {
-                            case 'concrete': fillColor = "#A9A9A9"; break;
-                            case 'brick': fillColor = "#CD5C5C"; break;
-                            case 'partition': fillColor = "#D3D3D3"; break;
-                         }
-                         renderObjects.push({
-                            id: wall.id, type: 'wall_polygon',
-                            material: wall.material,
-                            render: { points: wall.coordinates, fillColor, strokeColor: "#000", lineWidth: 1 }
-                         });
-                    } else {
-                        // lines fallback
-                        // ...
+        if (bimData.plan.openings) {
+            console.log(`Загружено проемов: ${bimData.plan.openings.length}`);
+            
+            bimData.plan.openings.forEach(op => {
+                const color = op.type === 'window' ? '#00aaff' : '#8B4513';
+                
+                renderObjects.push({
+                    id: op.id,
+                    layer: op.layer || "OPENINGS",
+                    type: 'opening',
+                    render: {
+                        x: op.position[0],
+                        y: op.position[1],
+                        width: op.width,
+                        height: 0.2,
+                        rotation: op.rotation,
+                        color: color
                     }
                 });
              }
