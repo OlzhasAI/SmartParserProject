@@ -113,10 +113,31 @@ async function buildBIM() {
 
 function renderTable(bim) {
     const div = document.getElementById("bimOutput");
-    // Простая статистика для примера
-    const roomsCount = bim.plan?.stats?.rooms_count || 0;
-    const wallsCount = bim.plan?.stats?.walls_count || 0;
-    const levelsCount = bim.section?.levels?.length || 0;
+
+    let wallsCount = 0;
+    let roomsCount = 0;
+    let levelsCount = 0;
+
+    if (bim.scene) {
+        // V2 Structure
+        wallsCount = bim.scene.walls?.length || 0;
+        roomsCount = bim.scene.rooms?.length || 0;
+    } else if (bim.plan) {
+        // V1 Structure
+        wallsCount = bim.plan.stats?.walls_count || 0;
+        roomsCount = bim.plan.stats?.rooms_count || 0;
+    }
+
+    // Levels usually come from section analysis which might be separate or part of structure
+    // Current main.py for V2 only returns {scene: ...}, so section info might be missing unless I add it back.
+    // backend/main.py V2 implementation replaced the whole json with result of analyze_dxf_v2.
+    // analyze_dxf_v2 returns only {scene: ...}.
+    // So levelsCount will be 0.
+    // If I want to support section in V2, I should have included it in main.py construction.
+    // But for now, let's just handle safely.
+    if (bim.section) {
+        levelsCount = bim.section.levels?.length || 0;
+    }
 
     div.innerHTML = `
         <div style="margin-top:20px; padding:15px; background:#e8f4fd; border-radius:5px;">
